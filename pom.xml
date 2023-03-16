@@ -166,6 +166,14 @@
 						<version>${jreleaser-maven-plugin.version}</version>
 						<configuration>
 							<jreleaser>
+								<project>
+									<description>ChatGPT API</description>
+									<website>https://github.com/shahabkondri/chat-gpt-api</website>
+									<docsUrl>https://github.com/shahabkondri/chat-gpt-api</docsUrl>
+									<license>MIT License</license>
+									<authors>Shahab Kondri</authors>
+									<copyright>2023 Shahab Kondr</copyright>
+								</project>
 								<signing>
 									<active>ALWAYS</active>
 									<armored>true</armored>
