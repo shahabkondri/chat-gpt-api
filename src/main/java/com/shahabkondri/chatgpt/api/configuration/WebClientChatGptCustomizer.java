@@ -17,10 +17,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * {@link WebClientCustomizer} that customizes the {@link WebClient} for interacting with
  * the ChatGPT API.
- * <p>
- * This class customizes the {@link WebClient.Builder} instance by setting the base URL,
- * content type, and authorization header. It uses {@link OpenApiProperties} to retrieve
- * the necessary configuration properties.
  *
  * @author Shahab Kondri
  */
@@ -29,20 +25,35 @@ public class WebClientChatGptCustomizer implements WebClientCustomizer {
 
 	private final OpenApiProperties properties;
 
+	/**
+	 * Constructs a new instance of the {@link WebClientChatGptCustomizer} with the
+	 * specified {@link OpenApiProperties}.
+	 * @param properties The {@link OpenApiProperties} object containing the necessary
+	 * configuration properties for customizing the {@link WebClient.Builder}.
+	 */
 	@Autowired
 	public WebClientChatGptCustomizer(OpenApiProperties properties) {
 		this.properties = properties;
 	}
 
+	/**
+	 * Customizes the provided {@link WebClient.Builder} instance by setting the base URL,
+	 * content type, and authorization header for interacting with the ChatGPT API.
+	 * <p>
+	 * This method also applies a {@link ChatGptResponseFilterFunction} to filter the body
+	 * of the {@link ClientResponse} for special cases in the response stream, such as
+	 * removing or replacing unwanted content.
+	 * @param webClientBuilder The {@link WebClient.Builder} instance to be customized.
+	 */
 	@Override
 	public void customize(WebClient.Builder webClientBuilder) {
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(properties.getBaseUrl());
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(properties.baseUrl());
 
 		DefaultUriBuilderFactory builderFactory = new DefaultUriBuilderFactory(uriBuilder);
 
 		webClientBuilder.uriBuilderFactory(builderFactory).filter(new ChatGptResponseFilterFunction())
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + properties.getApiKey());
+				.defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + properties.apiKey());
 	}
 
 	/**
